@@ -46,11 +46,13 @@ jobs:
           context: ./erp-frontend
           file: ./erp-frontend/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             API_BASE_URL=${{ secrets.API_BASE_URL }}
             API_VERSION=${{ secrets.API_VERSION }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}-frontend
+          tags: |
+             type=raw,value=latest
+             type=sha,prefix=sha-
 
       - name: Build and push Docker image backend
         uses: docker/build-push-action@v5
@@ -58,8 +60,10 @@ jobs:
           context: ./erp-backend
           file: ./erp-backend/app/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}-backend
+          tags: |
+             type=raw,value=latest
+             type=sha,prefix=sha-
           build-args: |
             POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
             POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
