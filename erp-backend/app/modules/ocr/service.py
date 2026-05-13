@@ -14,11 +14,13 @@ from app.modules.common.error import AppError, BadRequestError, InternalServerEr
 class OcrService:
     def __init__(self, db: Session):
         self.db = db
-        self.kolosal_api_key = os.getenv("KOLOSAL_API_KEY")
-        self.kolosal_api_url = "https://api.kolosal.ai/ocr/form"
+        self.AI_API_KEY = os.getenv("AI_API_KEY")
+        self.AI_API_URL = os.getenv("AI_API_URL")
 
-        if not self.kolosal_api_key:
-            raise UnauthorizedError("KOLOSAL_API_KEY is not configured.")
+        if not self.AI_API_KEY:
+            raise UnauthorizedError("AI_API_KEY is not configured.")
+        if not self.AI_API_URL:
+            raise UnauthorizedError("AI_API_URL is not configured.")
 
     async def process_ocr(self, file_data: bytes, filename: str, user_id: Optional[str] = None) -> OcrProcessResponse:
         if not file_data:
@@ -34,7 +36,7 @@ class OcrService:
                 self.kolosal_api_url,
                 files=files,
                 data=data,
-                headers={"Authorization": f"Bearer {self.kolosal_api_key}"},
+                headers={"Authorization": f"Bearer {self.AI_API_KEY}"},
                 timeout=30,
             )
             response.raise_for_status()

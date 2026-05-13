@@ -40,10 +40,10 @@ jobs:
              type=raw,value=latest
              type=sha,prefix=sha-
 
-      - name: Build and push image
+      - name: Build and push image frontend
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./erp-frontend
           file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -51,3 +51,18 @@ jobs:
           build-args: |
             API_BASE_URL=${{ secrets.API_BASE_URL }}
             API_VERSION=${{ secrets.API_VERSION }}
+
+      - name: Build and push Docker image backend
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./app/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
+            POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
