@@ -1,0 +1,23 @@
+services:
+  # ==============================
+  # LOCAL DEV ONLY (Profile: dev)
+  # ==============================
+  postgres:
+    profiles: ["dev"]
+    image: postgres:18.3-alpine
+    container_name: erp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dummy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dummy}
+      POSTGRES_DB: ${POSTGRES_DB:-dummy}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dummy} -d ${POSTGRES_DB:-dummy}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+

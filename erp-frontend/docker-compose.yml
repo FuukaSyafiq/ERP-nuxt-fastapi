@@ -1,0 +1,51 @@
+services:
+  # ================================
+  # Production Service
+  # ================================
+  warungai-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: warungai-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NUXT_HOST=0.0.0.0
+      - NUXT_PORT=3000
+      - NUXT_PUBLIC_API_BASE=${API_BASE_URL}
+      - NUXT_PUBLIC_API_VERSION=${API_VERSION}
+    restart: unless-stopped
+    profiles:
+      - prod
+    networks:
+      - warungai-network
+
+  # ================================
+  # Development Service
+  # ================================
+  warungai-frontend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: warungai-frontend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nuxt
+    environment:
+      - NODE_ENV=development
+      - NUXT_HOST=0.0.0.0
+      - NUXT_PORT=3000
+      - NUXT_PUBLIC_API_BASE=http://warungai-api:3001
+      - NUXT_PUBLIC_API_VERSION=v1
+    profiles:
+      - dev
+    networks:
+      - warungai-network
+
+networks:
+  warungai-network:
+    driver: bridge

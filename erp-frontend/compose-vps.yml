@@ -1,0 +1,13 @@
+services:
+  warungai-frontend:
+    image: ghcr.io/kanjutgusion/warungai-frontend:latest
+    container_name: warungai-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NUXT_HOST=0.0.0.0
+      - NUXT_PORT=3000
+      - NUXT_PUBLIC_API_BASE=${API_BASE_URL}
+      - NUXT_PUBLIC_API_VERSION=v1
+    restart: unless-stopped
